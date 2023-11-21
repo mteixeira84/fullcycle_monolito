@@ -20,7 +20,7 @@ export default class InvoiceFacade implements InvoiceFacadeInterface {
   }
 
   async generate(input: GenerateInvoiceFacadeInputDto): Promise<void> {
-    await this._generateUsecase.execute(input);
+    return await this._generateUsecase.execute(input);
   }
 
   async find(

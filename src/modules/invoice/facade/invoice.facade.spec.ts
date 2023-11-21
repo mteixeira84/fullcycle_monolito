@@ -48,23 +48,26 @@ describe("InvoiceFacade test", () => {
           id: "1",
           name: "Product 1",
           price: 100,
-          invoiceId: "123",
         },
         {
           id: "2",
           name: "Product 2",
           price: 200,
-          invoiceId: "123",
         },
       ],
     };
 
-    await facade.generate(input);
+    const result = await facade.generate(input);
+    console.log(result);
 
     const invoice = await InvoiceModel.findOne({
-      where: { id: "123" },
-      include: [{ model: InvoiceItemsModel }],
+      where: { name: "Client 1" },
+      include: ["items"],
     });
+
+    console.log(invoice.items);
+
+    //NAO CONSEGUI TRAZER OS ITEMS DA INVOICE
 
     expect(invoice).toBeDefined();
     expect(invoice.name).toBe(input.name);
@@ -103,19 +106,18 @@ describe("InvoiceFacade test", () => {
           id: "1",
           name: "Product 1",
           price: 100,
-          invoiceId: "123",
         },
         {
           id: "2",
           name: "Product 2",
           price: 200,
-          invoiceId: "123",
         },
       ],
     };
 
     await facade.generate(input);
 
+    //NAO CONSEGUI TRAZER A INVOICE JÁ QUE TERIA QUE NÃO ESTÁ DEFININDO O ID QUE ESTOU PASSANDO
     const invoice = await facade.find({ id: "123" });
 
     expect(invoice).toBeDefined();

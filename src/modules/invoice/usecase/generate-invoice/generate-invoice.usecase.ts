@@ -19,7 +19,7 @@ export default class GenerateInvoiceUseCase {
     input: GenerateInvoiceUseCaseInputDto
   ): Promise<GenerateInvoiceUseCaseOutputDto> {
     const props = {
-      id: new Id(input.id) || new Id(),
+      //id: new Id(input.id) || new Id(),
       name: input.name,
       document: input.document,
       address: new Address(
@@ -36,7 +36,6 @@ export default class GenerateInvoiceUseCase {
             id: new Id(item.id),
             name: item.name,
             price: item.price,
-            invoiceId: item.invoiceId,
           })
       ),
     };
@@ -54,7 +53,13 @@ export default class GenerateInvoiceUseCase {
       city: invoice.address.city,
       state: invoice.address.state,
       zipCode: invoice.address.zipCode,
-      items: input.items.map((item) => item),
+      items: invoice.items.map((item) => {
+        return {
+          id: item.id.id,
+          name: item.name,
+          price: item.price,
+        };
+      }),
       total: invoice.total,
     };
   }

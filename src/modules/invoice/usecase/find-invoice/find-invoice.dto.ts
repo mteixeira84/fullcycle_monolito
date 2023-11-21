@@ -18,7 +18,6 @@ export interface FindInvoiceUseCaseOutputDTO {
     id: string;
     name: string;
     price: number;
-    invoiceid: string;
   }[];
   total: number;
   createdAt: Date;

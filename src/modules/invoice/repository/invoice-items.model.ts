@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   ForeignKey,
   Model,
@@ -23,6 +24,9 @@ export default class InvoiceItemsModel extends Model {
   price: number;
 
   @ForeignKey(() => InvoiceModel)
-  @Column({ allowNull: false, field: "invoice_id" })
-  declare invoiceId: string;
+  @Column({ allowNull: false })
+  invoiceId: string;
+
+  @BelongsTo(() => InvoiceModel)
+  invoice: InvoiceModel;
 }

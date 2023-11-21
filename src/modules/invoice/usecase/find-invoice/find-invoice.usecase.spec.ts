@@ -19,13 +19,11 @@ const invoice = {
       id: "1",
       name: "Product 1",
       price: 100,
-      invoiceId: "123",
     },
     {
       id: "2",
       name: "Product 2",
       price: 200,
-      invoiceId: "123",
     },
   ],
   createdAt: new Date(),

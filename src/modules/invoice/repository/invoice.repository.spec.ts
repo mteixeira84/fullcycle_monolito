@@ -28,7 +28,7 @@ describe("Invoice repository test", () => {
 
   it("should create a invoice", async () => {
     const invoiceProps = {
-      id: new Id("1"),
+      id: new Id("123"),
       name: "Client 1",
       document: "Document 1",
       address: new Address(
@@ -44,13 +44,11 @@ describe("Invoice repository test", () => {
           id: new Id("1"),
           name: "Product 1",
           price: 100,
-          invoiceId: "1",
         }),
         new InvoiceItems({
           id: new Id("2"),
           name: "Product 2",
           price: 200,
-          invoiceId: "1",
         }),
       ],
       createdAt: new Date(),
@@ -86,7 +84,7 @@ describe("Invoice repository test", () => {
 
     await InvoiceModel.create(
       {
-        id: "1",
+        id: "123",
         name: "Client 1",
         document: "Document 1",
         street: "Street 1",
@@ -100,13 +98,11 @@ describe("Invoice repository test", () => {
             id: "1",
             name: "Product 1",
             price: 100,
-            invoiceId: "1",
           }),
           new InvoiceItemsModel({
             id: "2",
             name: "Product 2",
             price: 200,
-            invoiceId: "1",
           }),
         ],
         createdAt: new Date(),
@@ -117,9 +113,11 @@ describe("Invoice repository test", () => {
       }
     );
 
-    const invoice = await invoiceRepository.find("1");
+    const invoice = await invoiceRepository.find("123");
 
-    expect(invoice.id.id).toEqual("1");
+    console.log(invoice.items);
+
+    expect(invoice.id.id).toEqual("123");
     expect(invoice.name).toEqual("Client 1");
     expect(invoice.document).toEqual("Document 1");
     expect(invoice.address.street).toEqual("Street 1");
