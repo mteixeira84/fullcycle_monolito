@@ -12,7 +12,6 @@ export default class InvoiceFacadeFactory {
       generateUsecase: generateUsecase,
       findUsecase: findUsecase,
     });
-
     return facade;
   }
 }

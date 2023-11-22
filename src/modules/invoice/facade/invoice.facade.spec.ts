@@ -1,10 +1,31 @@
 import { Sequelize } from "sequelize-typescript";
 import InvoiceModel from "../repository/invoice.model";
 import InvoiceItemsModel from "../repository/invoice-items.model";
-import InvoiceRepository from "../repository/invoice.repository";
-import GenerateInvoiceUseCase from "../usecase/generate-invoice/generate-invoice.usecase";
-import InvoiceFacade from "./invoice.facade";
 import InvoiceFacadeFactory from "../factory/invoice.facade.factory";
+import { GenerateInvoiceFacadeInputDto } from "./invoice.facade.interface";
+
+const input = {
+  name: "Client 1",
+  document: "Document 1",
+  street: "Street 1",
+  number: "Number 1",
+  complement: "Complement 1",
+  city: "City 1",
+  state: "State 1",
+  zipCode: "Zip Code 1",
+  items: [
+    {
+      id: "1",
+      name: "Product 1",
+      price: 100,
+    },
+    {
+      id: "2",
+      name: "Product 2",
+      price: 200,
+    },
+  ],
+};
 
 describe("InvoiceFacade test", () => {
   let sequelize: Sequelize;
@@ -25,62 +46,28 @@ describe("InvoiceFacade test", () => {
     await sequelize.close();
   });
 
-  it("should create a invoice", async () => {
-    const repository = new InvoiceRepository();
-    const generateUsecase = new GenerateInvoiceUseCase(repository);
-    const facade = new InvoiceFacade({
-      generateUsecase: generateUsecase,
-      findUsecase: undefined,
-    });
-
-    const input = {
-      id: "123",
-      name: "Client 1",
-      document: "Document 1",
-      street: "Street 1",
-      number: "Number 1",
-      complement: "Complement 1",
-      city: "City 1",
-      state: "State 1",
-      zipCode: "Zip Code 1",
-      items: [
-        {
-          id: "1",
-          name: "Product 1",
-          price: 100,
-        },
-        {
-          id: "2",
-          name: "Product 2",
-          price: 200,
-        },
-      ],
-    };
-
+  it("Should create a invoice", async () => {
+    const facade = InvoiceFacadeFactory.create();
     const result = await facade.generate(input);
-    console.log(result);
 
-    const invoice = await InvoiceModel.findOne({
-      where: { name: "Client 1" },
-      include: ["items"],
+    const invoiceDb = await InvoiceModel.findOne({
+      where: { id: result.id },
+      include: [InvoiceItemsModel],
     });
 
-    console.log(invoice.items);
-
-    //NAO CONSEGUI TRAZER OS ITEMS DA INVOICE
-
-    expect(invoice).toBeDefined();
-    expect(invoice.name).toBe(input.name);
-    expect(invoice.document).toBe(input.document);
-    expect(invoice.street).toBe(input.street);
-    expect(invoice.number).toBe(input.number);
-    expect(invoice.complement).toBe(input.complement);
-    expect(invoice.city).toBe(input.city);
-    expect(invoice.state).toBe(input.state);
-    expect(invoice.zipCode).toBe(input.zipCode);
+    expect(invoiceDb).toBeDefined();
+    expect(invoiceDb.name).toBe(input.name);
+    expect(invoiceDb.document).toBe(input.document);
+    expect(invoiceDb.street).toBe(input.street);
+    expect(invoiceDb.number).toBe(input.number);
+    expect(invoiceDb.complement).toBe(input.complement);
+    expect(invoiceDb.city).toBe(input.city);
+    expect(invoiceDb.state).toBe(input.state);
+    expect(invoiceDb.zipCode).toBe(input.zipCode);
+    expect(invoiceDb.items.length).toBe(2);
   });
 
-  it("should find a invoice", async () => {
+  it("Should find a invoice", async () => {
     // const repository = new InvoiceRepository();
     // const generateUsecase = new GenerateInvoiceUseCase(repository);
     // const findUsecase = new FindInvoiceUseCase(repository);
@@ -90,38 +77,12 @@ describe("InvoiceFacade test", () => {
     // });
 
     const facade = InvoiceFacadeFactory.create();
+    const result = await facade.generate(input);
 
-    const input = {
-      id: "123",
-      name: "Client 1",
-      document: "Document 1",
-      street: "Street 1",
-      number: "Number 1",
-      complement: "Complement 1",
-      city: "City 1",
-      state: "State 1",
-      zipCode: "Zip Code 1",
-      items: [
-        {
-          id: "1",
-          name: "Product 1",
-          price: 100,
-        },
-        {
-          id: "2",
-          name: "Product 2",
-          price: 200,
-        },
-      ],
-    };
-
-    await facade.generate(input);
-
-    //NAO CONSEGUI TRAZER A INVOICE JÁ QUE TERIA QUE NÃO ESTÁ DEFININDO O ID QUE ESTOU PASSANDO
-    const invoice = await facade.find({ id: "123" });
+    const invoice = await facade.find({ id: result.id });
 
     expect(invoice).toBeDefined();
-    expect(invoice.id).toBe(input.id);
+    expect(invoice.id).toBe(result.id);
     expect(invoice.name).toBe(input.name);
     expect(invoice.document).toBe(input.document);
     expect(invoice.address.street).toBe(input.street);
@@ -130,5 +91,6 @@ describe("InvoiceFacade test", () => {
     expect(invoice.address.city).toBe(input.city);
     expect(invoice.address.state).toBe(input.state);
     expect(invoice.address.zipCode).toBe(input.zipCode);
+    expect(invoice.items.length).toBe(2);
   });
 });

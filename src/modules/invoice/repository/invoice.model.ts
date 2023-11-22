@@ -41,7 +41,7 @@ export default class InvoiceModel extends Model {
   zipCode: string;
 
   @HasMany(() => InvoiceItemsModel)
-  declare items: InvoiceItemsModel[];
+  items: InvoiceItemsModel[];
 
   @Column({ allowNull: false, field: "created_at" })
   createdAt: Date;

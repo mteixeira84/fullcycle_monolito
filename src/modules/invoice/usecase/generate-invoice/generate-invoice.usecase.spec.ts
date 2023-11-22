@@ -1,5 +1,28 @@
 import GenerateInvoiceUseCase from "./generate-invoice.usecase";
 
+const input = {
+  name: "Client 1",
+  document: "Document 1",
+  street: "Street 1",
+  number: "Number 1",
+  complement: "Complement 1",
+  city: "City 1",
+  state: "State 1",
+  zipCode: "Zip Code 1",
+  items: [
+    {
+      id: "1",
+      name: "Product 1",
+      price: 100,
+    },
+    {
+      id: "2",
+      name: "Product 2",
+      price: 200,
+    },
+  ],
+};
+
 const MockRepository = () => {
   return {
     generate: jest.fn(),
@@ -8,32 +31,9 @@ const MockRepository = () => {
 };
 
 describe("Generate Invoice usecase unit test", () => {
-  it("should generate a invoice", async () => {
+  it("Should generate a invoice", async () => {
     const invoiceRepository = MockRepository();
     const usecase = new GenerateInvoiceUseCase(invoiceRepository);
-
-    const input = {
-      name: "Client 1",
-      document: "Document 1",
-      street: "Street 1",
-      number: "Number 1",
-      complement: "Complement 1",
-      city: "City 1",
-      state: "State 1",
-      zipCode: "Zip Code 1",
-      items: [
-        {
-          id: "1",
-          name: "Product 1",
-          price: 100,
-        },
-        {
-          id: "2",
-          name: "Product 2",
-          price: 200,
-        },
-      ],
-    };
 
     const result = await usecase.execute(input);
 

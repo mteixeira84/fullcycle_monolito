@@ -1,3 +1,4 @@
+import Invoice from "../../domain/invoice.entity";
 import InvoiceGateway from "../../gateway/invoice.gateway";
 import {
   FindInvoiceUseCaseInputDTO,
@@ -14,7 +15,11 @@ export default class FindInvoiceUseCase {
   async execute(
     input: FindInvoiceUseCaseInputDTO
   ): Promise<FindInvoiceUseCaseOutputDTO> {
-    const invoice = await this._invoiceRepository.find(input.id);
+    const invoice: Invoice = await this._invoiceRepository.find(input.id);
+
+    if (!invoice) {
+      throw new Error("Invoice not found");
+    }
 
     return {
       id: invoice.id.id,
@@ -29,7 +34,7 @@ export default class FindInvoiceUseCase {
         zipCode: invoice.address.zipCode,
       },
       items: invoice.items.map((item) => {
-        return { id: String(item.id), name: item.name, price: item.price };
+        return { id: item.id.id, name: item.name, price: item.price };
       }),
       total: invoice.items.reduce((sum, item) => sum + item.price, 0),
       createdAt: invoice.createdAt,

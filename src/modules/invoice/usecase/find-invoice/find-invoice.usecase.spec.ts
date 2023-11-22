@@ -1,8 +1,10 @@
 import Address from "../../../@shared/domain/value-object/address";
 import Id from "../../../@shared/domain/value-object/id.value-object";
+import InvoiceItems from "../../domain/invoice-items.entity";
+import Invoice from "../../domain/invoice.entity";
 import FindInvoiceUseCase from "./find-invoice.usecase";
 
-const invoice = {
+const invoice = new Invoice({
   id: new Id("123"),
   name: "Client 1",
   document: "Document 1",
@@ -15,19 +17,18 @@ const invoice = {
     "Zip Code 1"
   ),
   items: [
-    {
-      id: "1",
+    new InvoiceItems({
+      id: new Id("1"),
       name: "Product 1",
       price: 100,
-    },
-    {
-      id: "2",
+    }),
+    new InvoiceItems({
+      id: new Id("2"),
       name: "Product 2",
       price: 200,
-    },
+    }),
   ],
-  createdAt: new Date(),
-};
+});
 
 const MockRepository = () => {
   return {
@@ -37,7 +38,7 @@ const MockRepository = () => {
 };
 
 describe("Find invoice use case unit test", () => {
-  it("should find a invoice", async () => {
+  it("Should find a invoice", async () => {
     const repository = MockRepository();
     const usecase = new FindInvoiceUseCase(repository);
 
